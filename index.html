@@ -6,17 +6,22 @@
     <title>С 8 Марта!</title>
 
     <meta property="og:title" content="С праздником весны! ✨">
-    <meta property="og:description" content="Маленький подарок для настроения. Нажми, чтобы открыть!">
+    <meta property="og:description" content="Интерактивный подарок. Нажми, чтобы открыть!">
     <meta property="og:image" content="preview-8march.jpg"> 
     <meta property="og:type" content="website">
-    <meta name="twitter:card" content="summary_large_image">
 
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     
     <style>
+        :root {
+            --heart-red: #ff1a1a;
+            --neon-pink: #ff3385;
+            --glow: 0 0 15px rgba(255, 51, 133, 0.8), 0 0 30px rgba(255, 51, 133, 0.4);
+        }
 
         body {
             margin: 0;
+            background: #000;
             background: radial-gradient(circle, #1a0a1a 0%, #000 100%);
             color: #fff;
             height: 100vh;
@@ -34,51 +39,46 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            pointer-events: none;
+            text-align: center;
         }
 
-        h1 { 
-            font-size: 2.5rem; 
-            text-shadow: 0 0 20px var(--heart-red); 
-            margin: 0; 
-            opacity: 0.9;
-        }
+        h1 { font-size: 2.5rem; text-shadow: 0 0 20px var(--heart-red); margin: 0; }
+        p { font-size: 1.1rem; opacity: 0.6; margin: 10px 0; }
 
-        /* Контейнер для Сердца и 8 */
         .art-container {
             position: relative;
             width: 500px;
             height: 500px;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
         }
 
         #heart-canvas {
             position: absolute;
-            filter: drop-shadow(0 0 15px var(--heart-red));
+            top: 0;
+            left: 0;
+            z-index: 1;
+            filter: drop-shadow(0 0 10px var(--heart-red));
         }
 
-        /* Композиция внутри сердца */
+        /* Блок 8 Марта */
         .march-content {
             position: relative;
-            z-index: 5;
+            z-index: 20; /* Поверх всего */
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin-top: -30px; /* Центрируем визуально в сердце */
+            margin-top: -40px; 
             animation: pulse-all 2s infinite ease-in-out;
+            pointer-events: none;
         }
 
-        /* Восьмерка */
         .eight-css {
             position: relative;
             width: 80px;
             height: 130px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            margin-bottom: 10px;
         }
 
         .circle {
@@ -86,43 +86,35 @@
             border-radius: 50%;
             box-shadow: var(--glow), inset var(--glow);
             position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
         }
 
         .top { width: 50px; height: 50px; top: 0; }
-        .bottom { width: 70px; height: 70px; bottom: 0; }
+        .bottom { width: 75px; height: 75px; bottom: 0; }
 
-        /* Слово МАРТА */
         .marta-text {
-            margin-top: 10px;
             font-size: 1.8rem;
             font-weight: bold;
             color: white;
             text-transform: uppercase;
             letter-spacing: 8px;
             text-shadow: var(--glow);
-            font-family: 'Segoe UI', sans-serif;
         }
 
         @keyframes pulse-all {
             0%, 100% { transform: scale(1); filter: brightness(1); }
-            50% { transform: scale(1.05); filter: brightness(1.2); }
+            50% { transform: scale(1.1); filter: brightness(1.3); }
         }
 
-        .hint {
-            position: fixed;
-            bottom: 20px;
-            font-size: 0.8rem;
-            color: #444;
-        }
+        .hint { position: fixed; bottom: 30px; color: #444; font-size: 0.8rem; }
     </style>
 </head>
 <body>
 
     <div class="ui-layer">
-    <h1>С праздником весны!</h1>
-    <p>Сияй, вдохновляй, создавай...</p>
-    
-    </div>
+        <h1>С праздником весны!</h1>
+        <p>Сияй, вдохновляй, создавай...</p>
         
         <div class="art-container">
             <canvas id="heart-canvas"></canvas>
@@ -137,7 +129,7 @@
         </div>
     </div>
     
-    <div class="hint">Кликни для салюта...</div>
+    <div class="hint">НАЖМИ НА ЭКРАН</div>
 
     <script>
         const canvas = document.getElementById('heart-canvas');
@@ -166,7 +158,6 @@
                 const pos = getHeartPoint(p.t);
                 const x = pos.x * pulse + canvas.width / 2;
                 const y = pos.y * pulse + canvas.height / 2;
-                
                 ctx.beginPath();
                 ctx.arc(x, y, p.size, 0, Math.PI * 2);
                 ctx.fill();
@@ -176,12 +167,11 @@
         draw();
 
         document.body.addEventListener('click', (e) => {
-            const colors = ['#ff3385', '#ff1a1a', '#ffffff', '#ff99cc'];
             confetti({
                 particleCount: 150,
                 spread: 70,
                 origin: { x: e.clientX / window.innerWidth, y: e.clientY / window.innerHeight },
-                colors: colors
+                colors: ['#ff3385', '#ff1a1a', '#ffffff', '#ff99cc']
             });
         });
     </script>
