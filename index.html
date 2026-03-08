@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Впечатление + 8 Марта</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root {
+            /* Палитра цветов */
+            --heart-red: #ff1a1a;
+            --neon-pink: #ff3385;
+            --light-pink: #ff99cc;
+            /* Свечение для 8 */
+            --glow: 0 0 15px rgba(255, 51, 133, 0.8), 0 0 30px rgba(255, 51, 133, 0.4);
+        }
+
+        body {
+            margin: 0;
+            background: radial-gradient(circle, #1a0a1a 0%, #000 100%);
+            color: #fff;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            font-family: 'Segoe UI', 'Roboto', sans-serif;
+            cursor: pointer;
+        }
+
+        /* Слои */
+        .ui-layer {
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            pointer-events: none; /* Текст не мешает кликам */
+        }
+
+        /* Стили текста (из твоего оригинала) */
+        h1 { 
+            font-size: 3.5rem; 
+            text-shadow: 0 0 20px var(--heart-red); 
+            margin: 0; 
+            text-align: center;
+        }
+        p { 
+            font-size: 1.5rem; 
+            opacity: 0.8; 
+            margin-top: 10px; 
+            margin-bottom: 30px; /* Отступ до сердца */
+            text-align: center;
+        }
+
+        /* Контейнер для композиции Сердце + 8 */
+        .art-container {
+            position: relative;
+            width: 600px;
+            height: 600px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Твое интерактивное сердце (Canvas) */
+        #heart-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            filter: drop-shadow(0 0 15px var(--heart-red));
+        }
+
+        /* Моя CSS-восьмерка, вписанная в центр */
+        .eight-css {
+            position: relative;
+            width: 100px; /* Уменьшили размер, чтобы влезло */
+            height: 160px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 5; /* Поверх канваса, но под текстом */
+            /* Синхронизируем пульсацию с канвасом (примерно) */
+            animation: pulse-eight 2s infinite ease-in-out;
+            pointer-events: none;
+            /* Смещение, чтобы 8 была ровно по центру визуального сердца */
+            margin-top: -20px; 
+        }
+
+        .circle {
+            border: 8px solid var(--neon-pink); /* Тоньше линии */
+            border-radius: 50%;
+            box-shadow: var(--glow), inset var(--glow);
+            position: absolute;
+        }
+
+        .top {
+            width: 60px;
+            height: 60px;
+            top: 0;
+        }
+
+        .bottom {
+            width: 80px;
+            height: 80px;
+            bottom: 0;
+        }
+
+        /* Анимация пульсации для CSS-восьмерки */
+        @keyframes pulse-eight {
+            0%, 100% { transform: scale(1); filter: brightness(1); }
+            50% { transform: scale(1.08); filter: brightness(1.2); }
+        }
+
+        .hint {
+            position: fixed;
+            bottom: 20px;
+            font-size: 0.9rem;
+            color: #666;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="ui-layer">
+        <h1>Смотри, как красиво</h1>
+        <p>С праздником весной! 💐</p>
+
+        <div class="art-container">
+            <canvas id="heart-canvas"></canvas>
+            
+            <div class="eight-css">
+                <div class="circle top"></div>
+                <div class="circle bottom"></div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="hint">Кликни в любое место...</div>
+
+    <script>
+        // --- ТВОЙ СКРИПТ КАНВАСА (БЕЗ ИЗМЕНЕНИЙ) ---
+        const canvas = document.getElementById('heart-canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = 600;
+        canvas.height = 600;
+
+        function getHeartPoint(t) {
+            const x = 16 * Math.pow(Math.sin(t), 3);
+            const y = 13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t);
+            return { x: x * 15, y: -y * 15 };
+        }
+
+        let particles = [];
+        for (let i = 0; i < 200; i++) {
+            particles.push({ t: Math.random() * Math.PI * 2, size: Math.random() * 2 + 1 });
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#ff1a1a'; // var(--heart-red)
+            const time = Date.now() * 0.002;
+            const pulse = 1 + Math.sin(time * 2) * 0.1;
+
+            particles.forEach(p => {
+                const pos = getHeartPoint(p.t);
+                const x = pos.x * pulse + canvas.width / 2;
+                const y = pos.y * pulse + canvas.height / 2;
+                
+                ctx.beginPath();
+                ctx.arc(x, y, p.size, 0, Math.PI * 2);
+                ctx.fill();
+            });
+            requestAnimationFrame(draw);
+        }
+        draw();
+
+        // --- ТВОЙ СКРИПТ КОНФЕТТИ (БЕЗ ИЗМЕНЕНИЙ) ---
+        document.body.addEventListener('click', (e) => {
+            // Цвета сохранены твои, они хорошо подходят
+            const colors = ['#ff0000', '#ff4d4d', '#ffffff', '#ff8080'];
+            
+            confetti({
+                particleCount: 150,
+                spread: 70,
+                origin: { x: e.clientX / window.innerWidth, y: e.clientY / window.innerHeight },
+                colors: colors
+            });
+
+            confetti({
+                particleCount: 40,
+                angle: 60,
+                spread: 55,
+                origin: { x: 0 },
+                colors: colors
+            });
+            confetti({
+                particleCount: 40,
+                angle: 120,
+                spread: 55,
+                origin: { x: 1 },
+                colors: colors
+            });
+        });
+    </script>
+</body>
+</html>
