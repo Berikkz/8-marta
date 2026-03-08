@@ -7,8 +7,10 @@
 
     <meta property="og:title" content="С праздником весны! ✨">
     <meta property="og:description" content="Интерактивный подарок. Нажми, чтобы открыть!">
-    <meta property="og:image" content="https://march8/preview-8march.jpg">
+    <meta property="og:image" content="https://eight-marta-alba.onrender.com/preview-8march.jpg">
+    <meta property="og:url" content="https://eight-marta-alba.onrender.com/">
     <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
 
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     
@@ -21,12 +23,10 @@
 
         body {
             margin: 0;
-            background: #000;
             background: radial-gradient(circle, #1a0a1a 0%, #000 100%);
             color: #fff;
             height: 100vh;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
             overflow: hidden;
@@ -34,18 +34,7 @@
             cursor: pointer;
         }
 
-        .ui-layer {
-            z-index: 10;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-        }
-
-        h1 { font-size: 2.5rem; text-shadow: 0 0 20px var(--heart-red); margin: 0; }
-        p { font-size: 1.1rem; opacity: 0.6; margin: 10px 0; }
-
-        .art-container {
+        .main-wrapper {
             position: relative;
             width: 500px;
             height: 500px;
@@ -54,30 +43,43 @@
             align-items: center;
         }
 
-        #heart-canvas {
+        .ui-text {
             position: absolute;
-            top: 0;
-            left: 0;
-            z-index: 1;
-            filter: drop-shadow(0 0 10px var(--heart-red));
-        }
-
-        .march-content {
-            position: relative;
-            z-index: 20;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-top: -40px; 
-            animation: pulse-all 2s infinite ease-in-out;
+            top: 20px;
+            width: 100%;
+            text-align: center;
+            z-index: 100;
             pointer-events: none;
         }
 
-        .eight-css {
+        h1 { font-size: 2.2rem; text-shadow: 0 0 20px var(--heart-red); margin: 0; }
+        p { font-size: 1rem; opacity: 0.6; margin: 5px 0; }
+
+        #heart-canvas {
+            position: absolute;
+            z-index: 5;
+            filter: drop-shadow(0 0 10px var(--heart-red));
+        }
+
+        .center-content {
+            position: absolute;
+            z-index: 200; /* Максимальный приоритет */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            transform: translateY(-20px);
+            animation: pulse-all 2s infinite ease-in-out;
+        }
+
+        .eight {
             position: relative;
-            width: 80px;
-            height: 130px;
-            margin-bottom: 10px;
+            width: 70px;
+            height: 110px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         .circle {
@@ -85,50 +87,49 @@
             border-radius: 50%;
             box-shadow: var(--glow), inset var(--glow);
             position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
         }
 
-        .top { width: 50px; height: 50px; top: 0; }
-        .bottom { width: 75px; height: 75px; bottom: 0; }
+        .top { width: 45px; height: 45px; top: 0; }
+        .bottom { width: 65px; height: 65px; bottom: 0; }
 
-        .marta-text {
+        .marta {
             font-size: 1.8rem;
             font-weight: bold;
             color: white;
             text-transform: uppercase;
             letter-spacing: 8px;
             text-shadow: var(--glow);
+            margin-top: 10px;
         }
 
         @keyframes pulse-all {
-            0%, 100% { transform: scale(1); filter: brightness(1); }
-            50% { transform: scale(1.1); filter: brightness(1.3); }
+            0%, 100% { transform: translateY(-20px) scale(1); }
+            50% { transform: translateY(-20px) scale(1.08); }
         }
 
-        .hint { position: fixed; bottom: 30px; color: #444; font-size: 0.8rem; }
+        .hint { position: fixed; bottom: 20px; color: #333; font-size: 0.7rem; }
     </style>
 </head>
 <body>
 
-    <div class="ui-layer">
-        <h1>С праздником весны!</h1>
-        <p>Сияй, вдохновляй, создавай...</p>
+    <div class="main-wrapper">
+        <div class="ui-text">
+            <h1>С праздником весны!</h1>
+            <p>Сияй, вдохновляй, создавай...</p>
+        </div>
+
+        <canvas id="heart-canvas"></canvas>
         
-        <div class="art-container">
-            <canvas id="heart-canvas"></canvas>
-            
-            <div class="march-content">
-                <div class="eight-css">
-                    <div class="circle top"></div>
-                    <div class="circle bottom"></div>
-                </div>
-                <div class="marta-text">Марта</div>
+        <div class="center-content">
+            <div class="eight">
+                <div class="circle top"></div>
+                <div class="circle bottom"></div>
             </div>
+            <div class="marta">Марта</div>
         </div>
     </div>
     
-    <div class="hint">НАЖМИ НА ЭКРАН</div>
+    <div class="hint">КЛИКНИ НА ЭКРАН</div>
 
     <script>
         const canvas = document.getElementById('heart-canvas');
@@ -139,12 +140,12 @@
         function getHeartPoint(t) {
             const x = 16 * Math.pow(Math.sin(t), 3);
             const y = 13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t);
-            return { x: x * 12, y: -y * 12 }; 
+            return { x: x * 11, y: -y * 11 }; 
         }
 
         let particles = [];
-        for (let i = 0; i < 200; i++) {
-            particles.push({ t: Math.random() * Math.PI * 2, size: Math.random() * 2 + 1 });
+        for (let i = 0; i < 220; i++) {
+            particles.push({ t: Math.random() * Math.PI * 2, size: Math.random() * 2 + 0.5 });
         }
 
         function draw() {
